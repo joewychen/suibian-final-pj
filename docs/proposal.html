@@ -63,34 +63,67 @@
 <body>
   <br />
   <h1 align="middle">CS184 Final Project</h1>
-  <h2 align="middle">Weiyuan Chen, ChingYi Leung,
+  <h2 align="middle">Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung
   </h2>
 
   <div class="padded">
-    <h2>Project Idea Overview</h2>
-    <p>
-    Here you should provide the context for your idea.
-    Describe the problem that you are trying to solve, why it is important, where it is challenging.
-    Give us a general idea on how you are going to solve it.
-    </p>
-
-    </p>
+    <h1>Light Field Camera Support</h1>
+    <h4>Summary:</h4>
+    <p> Our project's goal is provide interactively rendering of image through using 
+        Light Field Camera support. To do so, we will provide a GUI to let users change camera aperture or click
+        on a pixel to re-focuse at that point.</p>
+    <h4>Team: Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung</h4>
+    
     <h2 align="middle">Problem Description</h2>
-    <h3><em>Ray generation:</em></h3>
-    <p>
+    <p></p>
+      Our idea of creating a light field camera is trying to filter out the important part of the scene out of the 
+      unimportant. The problem that we are attempting to solve is adding the support to this camera so we may be capable
+      of view a scene from different perspectives or with different focus point. 
     </p>
-
+    <p>
+      <br>
+      <h4>Challenging Problems:</h4>
+      <ol>
+        <li>How do we make each pixel to be a grid which is able to record radiance from different directions?</li>
+        <li>How do we change the focus point based on the user's wishes?</li>
+        <li>How do we efficiently reveal the effect of different focus point 
+          after the scene has already been rendered?</li>
+      </ol>
+      
+    </p>
     <h2 align="middle">Goals & Deliverables</h2>
-    <h3><em>Goals</em></h3>
+    <p>
+      Goals: Under the support of GUI, we can see the image changes without re-rendering if we change
+      the parameters such as the aperture of the camera and the fucus point to the image.
+    </p>
+    <h3><em>Plan to Deliver:</em></h3>
+    <ol>
+      <li>Image: A fairly high resolution image and a GUI takes in user's input of location that they want to foucs on.</li>
+      <li>Interactive Demo: Demo will be presented using the GUI where </li>
+      <li>Quality & Performance: </li>
+    </ol>
 
 
-    <h3><em>Deliverables</em></h3>
+    <h3><em>Hope To Deliver</em></h3>
+    <ol>
+      <li>Image:</li>
+      <li>Interactive Demo</li>
+      <li>Quality & Performance: </li>
+    </ol>
 
 
     <h2 align="middle">Schedule</h2>
+    <ul>
+      <li>First Week(~4/15): Design and implmenet data structure and algorithm for the grid within each pixel.</li>
+      <li>Second Week(~4/22): Ensure Implement Variable Focal Length (modify light ray computation algorithms for Light Field Camera).</li>
+      <li>Third Week(~4/27): Debug and implement GUI to show the result. (Should at least have a working result for mileston check)</li>
+      <li>Fourth Week(~5/6): Prepare presentation and final writeup. Try for performance/speed improvements, if possible.</li>
+    </ul>
     <h2>Resources</h2>
     <ol>
-      <li>http://www.cs.harvard.edu/~sjg/papers/drlf.pdf</li>
+      <li>Dynamically Reparameterized Light Fields(Harvard University): http://www.cs.harvard.edu/~sjg/papers/drlf.pdf</li>
+      <li>https://www.youtube.com/watch?v=p2w1DNkITI8&ab_channel=JoanCharmant</li>
+      <li>https://graphics.stanford.edu/papers/lfcamera/lfcamera-150dpi.pdf</li>
       <li></li>
     </ol>
 
