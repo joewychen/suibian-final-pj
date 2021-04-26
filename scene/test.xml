@@ -1,0 +1,4 @@
+<integrator type="amazing">
+    <boolean name="softer_rays" value="true"/>
+    <float name="dark_matter" value="0.44"/>
+</integrator>
