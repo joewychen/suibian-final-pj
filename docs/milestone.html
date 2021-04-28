@@ -78,6 +78,11 @@
     <p>We sucessfully implemented refocusing on some light field data from 
       <a href="http://lightfield.stanford.edu/lfs.html">The (New) Stanford Light Field Archive</a> </p>
     <p>
+    <h3>Refocusing technical brief:</h3>
+    <p>We used shift-and-add algorithm on light field from Pro. Ren's lecture and paper.
+      Basically, we shift each RGB value in each grid(image) in the Stanford data set, and averge
+    the result with Numpy. The shifting amount is based on the alpha * the distance between
+    the position of grid and the center of the array of grids.</p>
 
     </p>
     <h3>Preliminary results:</h3> 
@@ -93,10 +98,13 @@
       </tr>
     </table>
     <p>
-      we are able to refocus at different position of the scene.
+      We are able to refocus at different position of the scene. However,
+       we are using different shifting parameters for different scene.
     </p>
 
-    <h4>Problem: we are using different shifting parameters for different scene. i.e the code for chess is different for ball<h4>
+    <h3>Video:</h3>
+    <a href="https://drive.google.com/file/d/1-UyWFUtLpbTGOdchzk9UsUxiXPDHCRB1/view?usp=sharing">Milestone Video</a>
+  
     <h3>Plan Reflection and Update:</h3>
     <h4>Original Plan: we break our project into 3 parts.</h4>
     <ul>
