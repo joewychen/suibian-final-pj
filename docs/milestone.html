@@ -53,6 +53,11 @@
     .c {
       border-collapse: collapse;
     }
+
+    img {
+      width: 250px;
+      height: 250px;
+    }
   </style>
   <title>CS 184 Final Project: Light Field Camera</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -64,51 +69,53 @@
   <br />
   <h1 align="middle">CS184 Final Project</h1>
   <h2 align="middle">Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung
+  <h2>repo: https://github.com/joewychen/suibian-final-pj</h2>
   </h2>
 
   <div class="padded">
-    <h3>Summary on Progress</h3>
+    <h1>Light Field Camera Support</h1>
+    <h3>Accomplishment:</h3>
+    <p>We sucessfully implemented refocusing on some light field data from 
+      <a href="http://lightfield.stanford.edu/lfs.html">The (New) Stanford Light Field Archive</a> </p>
     <p>
 
     </p>
     <h3>Preliminary results:</h3> 
-    <h4>Working case: Chessboard</h4>
+    <h4>Working case: Chessboard, Crystal ball</h4>
+    <table>
+      <tr>
+        <td>
+          <img src="./images/chess.gif" alt="" >
+        </td>
+        <td>
+          <img src="./images/ball.gif" alt="" >
+        </td>
+      </tr>
+    </table>
     <p>
-      We used the light field data from Stanford archive and the following result, shows that we are able to refocus at different position of the scene.
+      we are able to refocus at different position of the scene.
     </p>
-    <table>
-      <tr>
-        <td>
 
-        </td>
-        <td>
-
-        </td>
-      </tr>
-    </table>
-    <h4>Failed scenario: tarot card</h4>
-    <table>
-      <tr>
-        <td>
-
-        </td>
-        <td>
-
-        </td>
-      </tr>
-    </table>
+    <h4>Problem: we are using different shifting parameters for different scene. i.e the code for chess is different for ball<h4>
     <h3>Plan Reflection and Update:</h3>
+    <h4>Original Plan: we break our project into 3 parts.</h4>
     <ul>
-        <li>Our original plan was to finished figuring out how to generate our light field image datas. However, due to limitations and  many technical diffculties in 
-            the renderer we chose, we have spent more time on this data collection than we expected. Therefore, we decided to put 
-            this subpart on hold and work on actually implmenting the refocusing of image.
-        </li> 
-        <li>
-            Our next step is to implement aperture change and an interactive gui (a slider for adjusting refocusing area) for the refocusing. There are some concern 
-            about this gui that we plan to tackle on, including how the range of user input and 
-            If there is sufficient time for re-attempting creating light field image data input, we will give it a try after our refocus and gui is fully functioning.
-        </li>
+      <li>Part1: Collecting light field data set. (fail)</li>
+      <li>Part2: Light field refocusing and vary aperture size. (working)</li>
+      <li>Part3: GUI interaction. (coming)</li>
     </ul>
+    <p>Our original plan was to finished figuring out how to generate our light field image datas. Our attemp was using the mitsuba2 renderer to render
+      a set of images from different camera positions. However, we was not able to find some good sources of xml files that can be rendered sucessfully. Due to limitations and many technical diffculties in 
+      the renderer we chose, we have spent more time on this data collection than we expected. Therefore, we decided to put 
+      this subpart on hold and work on actually implmenting the refocusing of image.</p>
+    <p>Also, we noticed that refocusing is slow because it takes 10s to compute with numpy. Hence, GUI interation might be 
+      slow.
+    </p>
+
+    <h4>Updated Plan: finshing refocusing and aperture ajustment, and adding GUI for demo.</h4>
+    <p>Our next step is to implement aperture change and an interactive gui (a slider for adjusting refocusing area) for the refocusing. There are some concern 
+      about this gui that we plan to tackle on, including how the range of user input and 
+      If there is sufficient time for re-attempting creating light field image data input, we will give it a try after our refocus and gui is fully functioning.</p>
     
     
 
