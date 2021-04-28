@@ -53,6 +53,11 @@
     .c {
       border-collapse: collapse;
     }
+
+    img {
+      width: 250px;
+      height: 250px;
+    }
   </style>
   <title>CS 184 Final Project: Light Field Camera</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -64,112 +69,63 @@
   <br />
   <h1 align="middle">CS184 Final Project</h1>
   <h2 align="middle">Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung
+  <h2>repo: https://github.com/joewychen/suibian-final-pj</h2>
   </h2>
 
   <div class="padded">
     <h1>Light Field Camera Support</h1>
-    <h4>Summary:</h4>
-    <p> Our project's goal is provide interactively rendering of image through using 
-        Light Field Camera support. To do so, we will provide a GUI to let users change camera aperture or click
-        on a pixel to re-focuse at that point.</p>
-    <h4>Team: Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung</h4>
-    
-    <h2 align="middle">Problem Description</h2>
-    <p></p>
-      Our idea of creating a light field camera is trying to filter out the important part of the scene out of the 
-      unimportant. The problem that we are attempting to solve is adding the support to this camera so we may be capable
-      of view a scene from different perspectives or with different focus point. We try to produce a light field image 
-      which is 4d so that we can change the focus point interactively without rendering again.
-    </p>
+    <h3>Accomplishment:</h3>
+    <p>We sucessfully implemented refocusing on some light field data from 
+      <a href="http://lightfield.stanford.edu/lfs.html">The (New) Stanford Light Field Archive</a> </p>
     <p>
-      <br>
-      <h4>Challenging Problems:</h4>
-      <ol>
-        <li>How do we make each pixel to be a grid which is able to record radiance from different directions?</li>
-        <p>Attempt: This is core of the project. Before designing the data structure for the gird, we need to understand how
-          rays trace through to lens from camera plan and land on the light field sensor which is a set of microlenses. </p>
-        <li>How do we change the focus point based on the user's wishes?</li>
-        <p>Attempt: If LFIF supports this, we are good to go. If not, we need to build an interactive GUI to 
-          support this feature.
-        </p>
-        <li>How do we efficiently reveal the effect of different focus point 
-          after the scene has already been rendered?</li>
-        <p>Attempt: Since we must not render again with different focus points, the girds should have the data to achieve
-          this feature very fast. for example, O(N) to traverse each grid to update the sample_buffer after we change the 
-          focus.
-        </p>
-      </ol>
+    <h3>Refocusing technical brief:</h3>
+    <p>We used shift-and-add algorithm on light field from Pro. Ren's lecture and paper.
+      Basically, we shift each RGB value in each grid(image) in the Stanford data set, and averge
+    the result with Numpy. The shifting amount is based on the alpha * the distance between
+    the position of grid and the center of the array of grids.</p>
 
-      <h4>Questions:</h4>
-      <ol>
-        <li>What is the existing framework we can use to support the light field renderer?</li>
-        <p>Attempt: Extend the project3 ray tracing framework.</p>
-        <li>What is the input of the light field renderer?</li>
-        <p>Attempt: dae files.</p>
-        <li>Since we are creating light field images which are 4d with light field rendering, what kind of format 
-          of the images? How do we create those images?
-        </li>
-        <p>Attempt: Light field image format(LFIF) or only use GUI to support the showcases.</p>
-      </ol>
-      
     </p>
-    <h2 align="middle">Goals & Deliverables</h2>
+    <h3>Preliminary results:</h3> 
+    <h4>Working case: Chessboard, Crystal ball</h4>
+    <table>
+      <tr>
+        <td>
+          <img src="./images/chess.gif" alt="" >
+        </td>
+        <td>
+          <img src="./images/ball.gif" alt="" >
+        </td>
+      </tr>
+    </table>
     <p>
-      Goals: Under the support of GUI, we can see the image changes without re-rendering if we change
-      the parameters such as the aperture of the camera and the fucus point to the image.
+      We are able to refocus at different position of the scene. However,
+       we are using different shifting parameters for different scene.
     </p>
-    <img src="https://user-images.githubusercontent.com/15798094/97703913-b8639680-1ab1-11eb-8d8d-947ec173f4b5.gif" alt="alternatetext">
-    <p>Citation: https://github.com/linusmossberg/light-field-renderer</p>
-    <h3>How do we demo?</h3>
-    <p>We have a GUI to render an image. We will present the light field image in the GUI with some change of parameter options on the side
-      of the GUI.
-    </p>
-    <h3><em>Hope to Deliver:</em></h3>
-    <p>A GUI light field renderer allows users to focus on different spots of the image dynamically. After rendering, user can
-      change the focus point, focal length and aperture to present the changed image very fast.
-    </p>
-    <ol>
-      <li>Image: A fairly high resolution image and a GUI takes in user's input of location that they want to foucs on.
-        Also, changing some of the parameters can see the result right away in the GUI.
-      </li>
-      <li>Interactive Demo: the GUI.</li>
-      <li>Quality & Performance: we measure the time to render an image which might takes hours. We expect to take very
-        short time (1s to 2s) to reflect the change of the light field image after we change the parameters in the GUI.
-      </li>
-    </ol>
 
-    <h3><em>Plan To Deliver</em></h3>
-    <p>Implment the light field renderer that can produce light field image, and a GUI to present the work. We expect the GUI
-      can refocus after we click on a spot of the image.
-    </p>
-    <ol>
-      <li>Image: A fairly high resolution image and a GUI takes in user's input of location that they want to foucs on.</li>
-      <li>Interactive Demo: the GUI.</li>
-      <li>Quality & Performance: same as hoped</li>
-    </ol>
-
-    <h3><em>Baseline:</em></h3>
-    <p>We must produce light field images that can see the focus changed after we click on the images.</p>
-    <ol>
-      <li>Image: The light field images.</li>
-      <li>Interactive Demo: images and video.</li>
-      <li>Quality & Performance: hours to render a light field image.</li>
-    </ol>
-
-
-    <h2 align="middle">Schedule</h2>
+    <h3>Video:</h3>
+    <a href="https://drive.google.com/file/d/1-UyWFUtLpbTGOdchzk9UsUxiXPDHCRB1/view?usp=sharing">Milestone Video</a>
+  
+    <h3>Plan Reflection and Update:</h3>
+    <h4>Original Plan: we break our project into 3 parts.</h4>
     <ul>
-      <li>First Week(~4/15): Design and implmenet data structure and algorithm for the grid within each pixel.</li>
-      <li>Second Week(~4/22): Ensure Implement Variable Focal Length (modify light ray computation algorithms for Light Field Camera).</li>
-      <li>Third Week(~4/27): Debug and implement GUI to show the result. (Should at least have a working result for mileston check)</li>
-      <li>Fourth Week(~5/6): Prepare presentation and final writeup. Try for performance/speed improvements, if possible.</li>
+      <li>Part1: Collecting light field data set. (fail)</li>
+      <li>Part2: Light field refocusing and vary aperture size. (working)</li>
+      <li>Part3: GUI interaction. (coming)</li>
     </ul>
-    <h2>Resources</h2>
-    <ol>
-      <li><a href="http://www.cs.harvard.edu/~sjg/papers/drlf.pdf">Dynamically Reparameterized Light Fields(Harvard University)</a></li>
-      <li><a href="https://www.youtube.com/watch?v=p2w1DNkITI8&ab_channel=JoanCharmant">video of light field rendering</a></li>
-      <li><a href="https://graphics.stanford.edu/papers/lfcamera/lfcamera-150dpi.pdf">Ren Ng</a></li>
-    </ol>
+    <p>Our original plan was to finished figuring out how to generate our light field image datas. Our attemp was using the mitsuba2 renderer to render
+      a set of images from different camera positions. However, we was not able to find some good sources of xml files that can be rendered sucessfully. Due to limitations and many technical diffculties in 
+      the renderer we chose, we have spent more time on this data collection than we expected. Therefore, we decided to put 
+      this subpart on hold and work on actually implmenting the refocusing of image.</p>
+    <p>Also, we noticed that refocusing is slow because it takes 10s to compute with numpy. Hence, GUI interation might be 
+      slow.
+    </p>
+
+    <h4>Updated Plan: finshing refocusing and aperture ajustment, and adding GUI for demo.</h4>
+    <p>Our next step is to implement aperture change and an interactive gui (a slider for adjusting refocusing area) for the refocusing. There are some concern 
+      about this gui that we plan to tackle on, including how the range of user input and 
+      If there is sufficient time for re-attempting creating light field image data input, we will give it a try after our refocus and gui is fully functioning.</p>
+    
+    
 
   </div>
 </body>
