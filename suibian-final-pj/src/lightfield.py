@@ -11,18 +11,19 @@ from util import *
 
 SHAPE = (17,17)
 
-image_name = "knight"
+# image_name = "ball"
 
 order = 0
 left = 0
 
 class Lightfield:
-    def __init__(self, dirpath):
+    def __init__(self, dirpath, image_name):
         self.data = [] # 105
         self.output = []
         # info  = list(os.walk(dirpath))
         # filenames = info[0][2]
         # filenames.sort()
+        print(dirpath)
         extension = ".png"
         filenames = sorted(glob.glob(dirpath + "*" + extension))
         # print("sorted filename: " + str(filenames))
@@ -41,13 +42,11 @@ class Lightfield:
         print("Preprocessing done! Preprocessing takes " + (str(int(end - start))) + " seconds")
         # self.image_size = self.data[0].size      #image -> each has (x, y) rgb vectors
 
-        print("Casting python list into numpy array...")
-        start = time.time()
-        self.data = np.array(self.data)
-        end = time.time()
-        print("List casting done! List casting takes " + str(int(end - start)) + " seconds")
-        # print(self.data[:10])
-        # print(self.image_size)
+        # print("Casting python list into numpy array...")
+        # start = time.time()
+        # self.data = np.array(self.data)
+        # end = time.time()
+        # print("List casting done! List casting takes " + str(int(end - start)) + " seconds")
 
     def refocus(self, alpha = 0):
         self.output = []
@@ -64,9 +63,9 @@ class Lightfield:
                     shifty = np.roll(shiftx, int(alpha * dy), axis = 1)
                 self.output.append(shifty)
                 sys.stdout.write("\r" + "Refocusing" + "." * (int((i * SHAPE[1] + j) / (SHAPE[0] * SHAPE[1]) * 10)) + " " + str(int((i * SHAPE[1] + j + 1) / (SHAPE[0] * SHAPE[1]) * 100)) + "%")
-        sys.stdout.write("\nList casting again...")
-        self.output = np.array(self.output)
-        sys.stdout.write("\nList casting done!")
+        # sys.stdout.write("\nList casting again...")
+        # self.output = np.array(self.output)
+        # sys.stdout.write("\nList casting done!")
         return np.mean(self.output, axis = 0)
 
     def refocus_sol(self, imgs, scale):
@@ -89,8 +88,19 @@ class Lightfield:
         return refocused_img
                 
 
-    def apeture():
-        pass
+    def apeture(self, radius):
+        assert(radius >= 0 and radius <= SHAPE[0] // 2)
+        # if radius < 0 and radius > SHAPE[0] // 2: return
+        self.output = []
+        radius = int(radius)
+        center = (SHAPE[0] // 2, SHAPE[1] // 2)
+        row_start = center[0] - radius
+        col_start = center[1] - radius
+        for r in range(row_start, row_start + radius * 2 + 1):
+            for c in range(col_start, col_start + radius * 2 + 1):
+                self.output.append(self.data[r * SHAPE[1] + c])
+        return np.mean(self.output, axis=0)
+
 """ Alpha determines the refocusing distance in the image, while the camera position
 will also affect alpha's behavior."""
 # def main():
