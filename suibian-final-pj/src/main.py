@@ -13,5 +13,9 @@ if __name__ == "__main__":
       sys.stdout.write("\nRefocused with alpha = " + str(alpha) + " has ready!\n")
       alpha += 0.5
 
-    # ret = lf.apeture(9)
-    # plt.imsave("./results/testap.png", ret)
+    for i in range(9):
+        print("now is doing apeture with", i, "radius")
+        ret = lf.apeture(i)
+        sys.stdout.write("Writing to the disk buffer...\n")
+        plt.imsave("./results/" + image_name + "/apeture_" + str(i) + "_" + image_name  + ".png", ret)
+        sys.stdout.write("Apeture with radius = " + str(i) + " has ready!\n")

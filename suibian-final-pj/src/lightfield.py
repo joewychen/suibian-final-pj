@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-import numpy as np
+import cupy as np
 from PIL import Image
 import util
 import time
@@ -74,7 +74,7 @@ class Lightfield:
         ref_array = np.arange(289).reshape((17, 17))
         center_coord = (np.floor(ref_array.shape[0]/2.), np.floor(ref_array.shape[0]/2.))
         #ref_array = np.flipud(ref_array)
-        
+
         for x in range(ref_array.shape[0]):
             for y in range(ref_array.shape[1]):
                 img = imgs[ref_array[x][y]]
@@ -86,7 +86,7 @@ class Lightfield:
 
         refocused_img = np.mean(shifted_imgs, axis=0)
         return refocused_img
-                
+
 
     def apeture(self, radius):
         assert(radius >= 0 and radius <= SHAPE[0] // 2)

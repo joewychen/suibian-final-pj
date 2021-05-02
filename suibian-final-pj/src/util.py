@@ -29,9 +29,9 @@ def determine_file_processing_order(filenames, x_max, y_max, dirpath):
     last_col_first_row = last_col_first_row[len(dirpath) + 10:]
     if first_image[-4:] != ".png" or last_row_first_image[-4:] != ".png":
         raise ValueError("Non png files are not supported")
-    first_image = first_image[:-4]
-    last_row_first_image = last_row_first_image[:-4]
-    last_col_first_row = last_col_first_row[:-4]
+    first_image = first_image[:-5]
+    last_row_first_image = last_row_first_image[:-5]
+    last_col_first_row = last_col_first_row[:-5]
     f_ = find_char(first_image)
     l_ = find_char(last_row_first_image)
     c_ = find_char(last_col_first_row)
