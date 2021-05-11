@@ -19,9 +19,9 @@
       line-height: 170%;
     }
 
-    h2 {
+    /* h2 {
       text-align: center;
-    }
+    } */
 
     td {
       padding: 25px;
@@ -55,8 +55,14 @@
     }
 
     img {
-      width: 250px;
-      height: 250px;
+      width: 350px;
+      height: 350px;
+    }
+    h1 {
+        text-align: center;
+    }
+    table {
+      align-content: center;
     }
   </style>
   <title>CS 184 Final Project: Light Field Camera</title>
@@ -66,68 +72,209 @@
 </head>
 
 <body>
-  <br />
-  <h1 align="middle">CS184 Final Project</h1>
-  <h2 align="middle">Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung
-  <h2>repo: https://github.com/joewychen/suibian-final-pj</h2>
-  </h2>
+    <h1 align="middle">CS184 Final Project</h1>
+    <h1 align="middle">Weiyuan Chen, Shengxian Chen, Yiming wang, ChingYi Leung
+    <h1>Repo: https://github.com/joewychen/suibian-final-pj</h1>
 
-  <div class="padded">
-    <h1>Light Field Camera Support</h1>
-    <h3>Accomplishment:</h3>
-    <p>We sucessfully implemented refocusing on some light field data from 
-      <a href="http://lightfield.stanford.edu/lfs.html">The (New) Stanford Light Field Archive</a> </p>
-    <p>
-    <h3>Refocusing technical brief:</h3>
-    <p>We used shift-and-add algorithm on light field from Pro. Ren's lecture and paper.
-      Basically, we shift each RGB value in each grid(image) in the Stanford data set, and averge
-    the result with Numpy. The shifting amount is based on the alpha * the distance between
-    the position of grid and the center of the array of grids.</p>
+    <div class="padded">
+        <h1>Light Field Camera Support</h1>
+        <h2>Abstract</h2>
+        <p>In our project, we implement light field camera support such that we can focus on 
+          differet position of the image without rendering the image again. This project requires
+          light field data (a set of images), so we also use the pathtracer renderer to collect
+          our light field data. We also speed up our computation via GPU. Finally, We visualize our
+          results with a GUI which can refocus the image based on user's input of the alpha value
+          and the radius of the aperture.
+        </p>
+        We spilt our project into three parts.
+        <ol>
+          <li>Collecting light field data</li>
+          <li>Image refocusing with different aperatures</li>
+          <li>GUI support</li>
+        </ol>
 
-    </p>
-    <h3>Preliminary results:</h3> 
-    <h4>Working case: Chessboard, Crystal ball</h4>
-    <table>
-      <tr>
-        <td>
-          <img src="./images/chess.gif" alt="" >
-        </td>
-        <td>
-          <img src="./images/ball.gif" alt="" >
-        </td>
-      </tr>
-    </table>
-    <p>
-      We are able to refocus at different position of the scene. However,
-       we are using different shifting parameters for different scene.
-    </p>
+        <h2>Technical approach</h2>
+        <h3>How do we collect our light field data?</h3>
+        <p>We use our course project, Proj3-1, as the renderer of our data generator.
+           We used a python script in which generate different images with different camera positons.
+          The python script import a camerapos file and write different camera position, so that the image generated from this file
+            will have a position goes from left to right, from top to the bottom. Also, it's important
+          to label the position in the image file name because our application requires that information
+        in order to produce correct refocusing. We also download some realistic light field data from
+      <a href="http://lightfield.stanford.edu/lfs.html">stanford archive</a>.</p>
+      <table>
+        <tr>
+          <td>
+            <img src="./images/data_collect.jpg" style="width:450px;height:400px;">
+            <p>From pathtracer renderer</p>
+          </td>
+          <td>
+            <img src="./images/stanfordar.png" style="width:450px;height:400px;">
+            <p>From stanford archive</p>
+          </td>
+        </tr>
+      </table>
+              
+        <h3>How does refocusing work?</h3>
+        <div style="text-align: center;">
+          <img src="./images/refous.jpg" style="width:550px;height:300px;"> 
+          <p>Fig.1</p>
+        </div>
+        <p>Imagine we have a grid of small lens, where each len contains a small image of the scene with different angles and position. 
+          Each len can be seen as some rotation of the middle len, we can think of them as two view points:
 
-    <h3>Video:</h3>
-    <a href="https://drive.google.com/file/d/1-UyWFUtLpbTGOdchzk9UsUxiXPDHCRB1/view?usp=sharing">Milestone Video</a>
-  
-    <h3>Plan Reflection and Update:</h3>
-    <h4>Original Plan: we break our project into 3 parts.</h4>
-    <ul>
-      <li>Part1: Collecting light field data set. (fail)</li>
-      <li>Part2: Light field refocusing and vary aperture size. (working)</li>
-      <li>Part3: GUI interaction. (coming)</li>
-    </ul>
-    <p>Our original plan was to finished figuring out how to generate our light field image datas. Our attemp was using the mitsuba2 renderer to render
-      a set of images from different camera positions. However, we was not able to find some good sources of xml files that can be rendered sucessfully. Due to limitations and many technical diffculties in 
-      the renderer we chose, we have spent more time on this data collection than we expected. Therefore, we decided to put 
-      this subpart on hold and work on actually implmenting the refocusing of image.</p>
-    <p>Also, we noticed that refocusing is slow because it takes 10s to compute with numpy. Hence, GUI interation might be 
-      slow.
-    </p>
+          <br>
+          Suppose there is a far object & a close object in the scene, (Fig.1)
+          if we shift our camera position by an angle alpha, D(obj moves in camera) = tan(alpha) * (FOV - d), 
+          where d is the object distance to the main len, and alpha is the angle between original camera vertical line as well as the shifted camera vertical line.
+          I.e. if d is large, meaning far object, (FOV - d) will be small, so D will also be small.
+          If d is large, meaning close object, (FOV - d) will be large, so D will also be large.
+          <br>
+          Therefore, averaging all images from different viewpoints can be visualize as the many overlapping of far object, 
+          because far object won't provide large shifting. While the far objects keeps overlapping, the close objects will be blurry, 
+          this is because close objects are highly affected by the shifting, therefore, we could imagine a scene that far object are clear, and
+          close objects are blurry, which is a refocusing effect particular on far obj. As shown in the following image:
+          </p>
 
-    <h4>Updated Plan: finshing refocusing and aperture ajustment, and adding GUI for demo.</h4>
-    <p>Our next step is to implement aperture change and an interactive gui (a slider for adjusting refocusing area) for the refocusing. There are some concern 
-      about this gui that we plan to tackle on, including how the range of user input and 
-      If there is sufficient time for re-attempting creating light field image data input, we will give it a try after our refocus and gui is fully functioning.</p>
-    
-    
+          <div align="center">
+            <img src="./images/chess_0.png" style="width:550px;height:350px;">
+          <p> alpha = 0, focus at natural offset</p>
+          </div>
 
-  </div>
+          <p>Given all these images with different shifting, we can consider provide different shifting on it so that it can achieve
+            what refocusing onto different objects within different distances. In this case, we created a 17 by 17 grid, which stores
+            image in diffenent camera positions and angles. Based on different images, we choose to shift them towards the central image, 
+            which is the (8, 8) image. We use np.roll to do the shifting against each image based on the position of the image in the grid, 
+            i.e. say a is right at (0, 0), we will then shift the image into (8, 8). This will make every image getting close to the center.
+            If we think about the result of this, this will simply be changing the different overlapping area as opposed to merely averaging 
+            each image. As a result, when alpha = 1, we can see that we have a different refocusing effect.
+          </p>
+          <div align="center">
+            <img src="./images/chess_1.png" style="width:550px;height:350px;">
+            <p> alpha = 1, focus at more front of the scene</p>
+          </div>
+
+
+          <p>As opposed to these two images above, the image with alpha = -1 will be shown as below, which focus on the further object of the image. </p>
+
+          <div align="center">
+            <img src="./images/chess_-1.png" style="width:550px;height:350px;">
+            <p> alpha = -1, focus at more back of the scene</p>
+          </div>
+          <h3>How does aperture adjustment work?</h3>
+          <p> Larger aperture means more lights get into the camera, and the blurry effects are stronger.
+            In order to simulate this effects, we include more light field data for the refocusing. We first
+            pick the (8,8) grid as the center of our 17 by 17 grids. Then, we expand the size from just one
+            light field data at (8, 8) to 289 size light field data based on the radius. Including more light
+            field images and averaging them after shifting can get more blurry results because more rgb values
+            are added up to produce more difference in rgb value.
+          </p>
+
+          <table>
+            <tr>
+              <td>
+                <img src="./images/drag0.png" alt="" >
+                <p>radius=0, is just act like a pinhole camera</p>
+              </td>
+              <td>
+                <img src="./images/drag4.png" alt="" >
+                <p>radius=4, we see the blurry effect</p>
+              </td>
+              <td>
+                <img src="./images/drag8.png" alt="" >
+                <p>radius=8, the most blurry effect in our case</p>
+              </td>
+            </tr>
+          </table>
+
+
+          <h3> Acceleration we used on the project. </h3>
+          <p> Since refocusing requires lots of matrix operations, we run our matrix operation on GPU with CUPU.
+             It took 10s to 12s on my Macbook pro without speedup, and now only take 1s to 2s on the GPU computer.
+          </p>
+          <p> We wrote our immediate result from the np.array that was produced by different image set into a file (permanent caching), this reduces
+            the lading images process time from 20s to 1s each. 
+          </p>
+
+          <h2> GUI support </h2>
+          <p>GUI can let user to choose different scene, alpha value, and radius of the aperture.
+            The GUI did not precalculate any image, we calculate our refocusing at real time and show
+            the image on the GUI. Therefore, speed of the calculation is very important in our project.
+          </p>
+          <img src="./images/gui.png" style="width:650px;height:400px;">
+
+        <h2>Results</h2>
+        <table align="center">
+          <tr>
+            <td>
+              <img src="./images/blucy.gif" alt="" >
+              <p>changing alpha from -2 to 2</p>
+            </td>
+            <td>
+              <img src="./images/dragon_ref.gif" alt="" >
+              <p>changing alpha from -2 to 2</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img src="./images/dragon_ape.gif" alt="" >
+              <p>chaning radius from 0 to 8</p>
+            </td>
+            <td>
+              <img src="./images/knight.gif" alt="" >
+              <p>More from stanford light field data</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img src="./images/chess.gif" alt="" >
+            </td>
+            <td>
+              <img src="./images/ball.gif" alt="" >
+            </td>
+          </tr>
+            <tr>
+              <td>
+                <img src="./images/bean.gif" alt="" >
+              </td>
+              <td>
+                <img src="./images/bracelet.gif" alt="" >
+              </td>
+            </tr>
+        </table>
+
+        <h2>References</h2>
+        <ul>
+          <li>
+            <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/upload/files/proj5/cs194-26-abr/">CS194 Writeup</a>
+          </li>
+          <li>
+            <a href="https://graphics.stanford.edu/papers/lfcamera/lfcamera-150dpi.pdf">Light Field Photography with a Hand-held Plenoptic Camera</a>
+          </li>
+          <li>
+            <a href="http://lightfield.stanford.edu/">Stanford light field image archive</a>
+          </li>
+          <li>
+            <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/hw/proj5/index.html"> Reference spec </a> 
+          </li>
+
+        </ul>
+        <h2>Contributions from each team member</h2>
+        <p> Most part of the project are working in group, and Weiyuan Chen provides visual studio code live sharing between groupmates</p>
+        <p> Weiyuan Chen</p> 
+        <p> I implemented the general structure of the refocusing code, but it still needs some improvement. Also, I implemented
+          the whole aperture processing. I also implemented the basic structure of the GUI.
+        </p> 
+        <p> Shengxian Chen</p> 
+        <p>
+          I finished up the rest of the refocusing part, which supports different image layouts and camera position handling. Gave idea about the
+          acceleration of the preprocesssing part (reading image into permanent cache). 
+        </p>
+        <p> </p>
+        <p> </p>
+
+    </div>
+
 </body>
 
 </html>
