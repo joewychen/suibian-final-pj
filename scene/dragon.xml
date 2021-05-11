@@ -1,5 +1,0 @@
-<scene version="2.0.0">
-    <shape type="sphere">
-        <float name="radius" value="10"/>
-    </shape>
-</scene>
