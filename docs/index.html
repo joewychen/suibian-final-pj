@@ -64,6 +64,14 @@
     table {
       align-content: center;
     }
+    .latex {
+      width: 35%;
+      height: 35%;
+    }
+    .latex1 {
+      width: 8%;
+      height: 8%;
+    }
   </style>
   <title>CS 184 Final Project: Light Field Camera</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -79,7 +87,7 @@
     <div class="padded">
         <h1>Light Field Camera Support</h1>
         <h2>Abstract</h2>
-        <p>In our project, we implement light field camera support such that we can focus on 
+        <p>In our project, we implement light field camera support such that we can focus on
           differet position of the image without rendering the image again. This project requires
           light field data (a set of images), so we also use the pathtracer renderer to collect
           our light field data. We also speed up our computation via GPU. Finally, We visualize our
@@ -114,24 +122,27 @@
           </td>
         </tr>
       </table>
-              
+
         <h3>How does refocusing work?</h3>
         <div style="text-align: center;">
-          <img src="./images/refous.jpg" style="width:550px;height:300px;"> 
+          <img src="./images/refous.jpg" style="width:550px;height:300px;">
           <p>Fig.1</p>
         </div>
-        <p>Imagine we have a grid of small lens, where each len contains a small image of the scene with different angles and position. 
+        <p>Imagine we have a grid of small lens, where each len contains a small image of the scene with different angles and position.
           Each len can be seen as some rotation of the middle len, we can think of them as two view points:
 
           <br>
           Suppose there is a far object & a close object in the scene, (Fig.1)
-          if we shift our camera position by an angle alpha, D(obj moves in camera) = tan(alpha) * (FOV - d), 
+          if we shift our camera position by an angle alpha, <img src="http://latex.codecogs.com/svg.latex?D(obj moves in camera) = tan(alpha) * (FOV - d)" border="0" class = "latex"/>
+          ,
           where d is the object distance to the main len, and alpha is the angle between original camera vertical line as well as the shifted camera vertical line.
-          I.e. if d is large, meaning far object, (FOV - d) will be small, so D will also be small.
-          If d is large, meaning close object, (FOV - d) will be large, so D will also be large.
+          I.e. if d is large, meaning far object,
+          <img src="http://latex.codecogs.com/svg.latex?(FOV - d)" border="0" class = "latex1"/>
+           will be small, so D will also be small.
+          If d is large, meaning close object, <img src="http://latex.codecogs.com/svg.latex?(FOV - d)" border="0" class = "latex1"/>  will be large, so D will also be large.
           <br>
-          Therefore, averaging all images from different viewpoints can be visualize as the many overlapping of far object, 
-          because far object won't provide large shifting. While the far objects keeps overlapping, the close objects will be blurry, 
+          Therefore, averaging all images from different viewpoints can be visualize as the many overlapping of far object,
+          because far object won't provide large shifting. While the far objects keeps overlapping, the close objects will be blurry,
           this is because close objects are highly affected by the shifting, therefore, we could imagine a scene that far object are clear, and
           close objects are blurry, which is a refocusing effect particular on far obj. As shown in the following image:
           </p>
@@ -143,10 +154,10 @@
 
           <p>Given all these images with different shifting, we can consider provide different shifting on it so that it can achieve
             what refocusing onto different objects within different distances. In this case, we created a 17 by 17 grid, which stores
-            image in diffenent camera positions and angles. Based on different images, we choose to shift them towards the central image, 
-            which is the (8, 8) image. We use np.roll to do the shifting against each image based on the position of the image in the grid, 
+            image in diffenent camera positions and angles. Based on different images, we choose to shift them towards the central image,
+            which is the (8, 8) image. We use np.roll to do the shifting against each image based on the position of the image in the grid,
             i.e. say a is right at (0, 0), we will then shift the image into (8, 8). This will make every image getting close to the center.
-            If we think about the result of this, this will simply be changing the different overlapping area as opposed to merely averaging 
+            If we think about the result of this, this will simply be changing the different overlapping area as opposed to merely averaging
             each image. As a result, when alpha = 1, we can see that we have a different refocusing effect.
           </p>
           <div align="center">
@@ -193,7 +204,7 @@
              It took 10s to 12s on my Macbook pro without speedup, and now only take 1s to 2s on the GPU computer.
           </p>
           <p> We wrote our immediate result from the np.array that was produced by different image set into a file (permanent caching), this reduces
-            the lading images process time from 20s to 1s each. 
+            the lading images process time from 20s to 1s each.
           </p>
 
           <h2> GUI support </h2>
@@ -203,6 +214,13 @@
           </p>
           <div align="center"> <img src="./images/gui.png" style="width:650px;height:400px;"></div>
 
+        <h2>Video & Demo</h2>
+        <div align="center">
+          <video width="50%" height="50%" controls>
+            <source src="./images/final.mp4" type="video/mp4">
+            <!-- <source src="movie.ogg" type="video/ogg"> -->
+          </video>
+        </div>
         <h2>Results</h2>
         <table align="center">
           <tr>
@@ -255,25 +273,25 @@
             <a href="http://lightfield.stanford.edu/">Stanford light field image archive</a>
           </li>
           <li>
-            <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/hw/proj5/index.html"> Reference spec </a> 
+            <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa18/hw/proj5/index.html"> Reference spec </a>
           </li>
 
         </ul>
         <h2>Contributions from each team member</h2>
         <p> Most part of the project are working in group, and Weiyuan Chen provides visual studio code live sharing between groupmates</p>
-        <p> Weiyuan Chen</p> 
+        <p> Weiyuan Chen</p>
         <p> I implemented the general structure of the refocusing code, but it still needs some improvement. Also, I implemented
           the whole aperture processing. I also implemented the basic structure of the GUI.
-        </p> 
-        <p> Shengxian Chen</p> 
+        </p>
+        <p> Shengxian Chen</p>
         <p>
           I finished up the rest of the refocusing part, which supports different image layouts and camera position handling. Gave idea about the
-          acceleration of the preprocesssing part (reading image into permanent cache). 
+          acceleration of the preprocesssing part (reading image into permanent cache).
         </p>
         <p> Yiming wang</p>
         <p>I implemented the data collection and the GUI support.</p>
         <p> ChingYi Leung</p>
-        <p>I did the refocusing, videos, and writeup.</p>
+        <p>I also worked on refocusing and the creation/rendering of the dataset. I was also responsible for generating the results and did the presentaiton and writeup.</p>
 
     </div>
 
